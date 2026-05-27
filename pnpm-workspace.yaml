@@ -1,0 +1,9 @@
+allowBuilds:
+  '@swc/core': false
+  nx: false
+cleanupUnusedCatalogs: true
+linkWorkspacePackages: true
+preferWorkspacePackages: true
+
+packages:
+  - 'benchmarks/*'
