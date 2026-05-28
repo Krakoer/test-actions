@@ -1,6 +1,6 @@
 {
   "name": "@krakoer/calc-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Small math helpers — demo package for supply-chain exercises",
   "type": "module",
   "main": "./dist/index.cjs",
