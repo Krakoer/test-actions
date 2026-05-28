@@ -2,34 +2,59 @@ name: Release
 
 on:
   push:
-    branches: [main, '*-pre', '*-maint']
+    tags:
+      - 'v*'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
-env:
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-  SERVER_PRESET: 'node-server'
-
 permissions:
   contents: write
-  id-token: write
-  pull-requests: write
 
 jobs:
   release:
     name: Release
-    if: "!contains(github.event.head_commit.message, 'ci: changeset release')"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
-        with:
-          fetch-depth: 0
 
       - name: Setup Tools
         uses: ./.github/setup
 
-      - name: Run Tests
-        run: /bin/bash
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            version="${GITHUB_REF#refs/tags/v}"
+          else
+            version="$(node -p "require('./packages/calc-utils/package.json').version")"
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "tag=v${version}" >> "$GITHUB_OUTPUT"
+
+      - name: Test package
+        run: pnpm --filter @krakoer/calc-utils test
+
+      - name: Build package
+        run: pnpm --filter @krakoer/calc-utils build
+
+      - name: Pack tarball
+        working-directory: packages/calc-utils
+        run: |
+          npm pack --ignore-scripts
+          tarball="krakoer-calc-utils-${{ steps.version.outputs.version }}.tgz"
+          mv krakoer-calc-utils-*.tgz "$tarball"
+          echo "TARBALL=$tarball" >> "$GITHUB_ENV"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: ${{ steps.version.outputs.tag }}
+          generate_release_notes: true
+          files: packages/calc-utils/${{ env.TARBALL }}
+          fail_on_unmatched_files: true

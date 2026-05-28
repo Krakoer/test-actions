@@ -1,0 +1,38 @@
+{
+  "name": "@krakoer/calc-utils",
+  "version": "1.0.0",
+  "description": "Small math helpers — demo package for supply-chain exercises",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "test": "pnpm run build && node --test test/index.test.js",
+    "prepack": "pnpm run build"
+  },
+  "keywords": [
+    "math",
+    "add"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  }
+}
