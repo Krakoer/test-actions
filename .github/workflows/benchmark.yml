@@ -3,11 +3,11 @@ name: Bundle Size
 on:
   pull_request_target:
     paths:
-      - 'src/bench/**'
+      - 'src/**'
   push:
     branches: [main]
     paths:
-      - 'src/bench/**'
+      - 'src/**'
   workflow_dispatch:
 
 concurrency:
