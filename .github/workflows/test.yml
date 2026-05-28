@@ -1,0 +1,30 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/calc-utils/**'
+      - 'pnpm-lock.yaml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  calc-utils:
+    name: calc-utils
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+
+      - name: Setup Tools
+        uses: ./.github/setup
+
+      - name: Test package
+        run: pnpm --filter @krakoer/calc-utils test

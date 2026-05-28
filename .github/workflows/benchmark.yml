@@ -22,7 +22,7 @@ env:
 jobs:
   benchmark-pr:
     name: Benchmark PR
-    # if: github.event_name == 'pull_request_target'
+    if: github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
