@@ -45,9 +45,13 @@ jobs:
       - name: Pack tarball
         working-directory: packages/calc-utils
         run: |
-          npm pack --ignore-scripts
           tarball="krakoer-calc-utils-${{ steps.version.outputs.version }}.tgz"
-          mv krakoer-calc-utils-*.tgz "$tarball"
+          npm pack --ignore-scripts
+          if [[ ! -f "$tarball" ]]; then
+            echo "Expected tarball not found: $tarball"
+            ls -la *.tgz 2>/dev/null || true
+            exit 1
+          fi
           echo "TARBALL=$tarball" >> "$GITHUB_ENV"
 
       - name: Create GitHub release
