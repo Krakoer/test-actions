@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "node ../../scripts/benchmarks/bundle-size/measure.mjs"
+    "build": "node ../../packages/history/vite_setup.mjs && node ../../scripts/benchmarks/bundle-size/measure.mjs"
   },
   "private": true,
   "dependencies": {},
